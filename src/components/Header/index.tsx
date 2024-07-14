@@ -92,7 +92,6 @@ const Header = (props: {
                   />
                 </svg>
               </button>
-
               <input
                 type="text"
                 placeholder="Type to search..."

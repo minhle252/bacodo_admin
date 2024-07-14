@@ -1,46 +1,70 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
-
-export const metadata: Metadata = {
-  title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Signin Page TailAdmin Dashboard Template",
-};
+import { loginService } from "@/lib/api/auth.api";
+import { useRouter } from "next/navigation";
+import { getSessionData, setSessionData } from "@/lib/sessionStorage";
 
 const SignIn: React.FC = () => {
-  return (
-    <DefaultLayout>
-      <Breadcrumb pageName="Sign In" />
+  const router = useRouter();
+  const loginFunc = async (event: any) => {
+    event.preventDefault();
+    const data = {
+      email: event.target.email.value,
+      password: event.target.password.value,
+    };
+    try {
+      const { access } = await loginService(data);
+      if (access) {
+        await setSessionData("token", access);
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Error!");
+    }
+  };
+  const checkLogin = async () => {
+    try {
+      let res = await getSessionData("token");
+      if (res) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    checkLogin();
+  }, []);
 
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="flex flex-wrap items-center">
+  return (
+    <div>
+      <div className="h-[100vh] rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="flex h-full flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="px-26 py-17.5 text-center">
               <Link className="mb-5.5 inline-block" href="/">
                 <Image
                   className="hidden dark:block"
-                  src={"/images/logo/logo.svg"}
+                  src={"/images/logo/logo-dark.png"}
                   alt="Logo"
                   width={176}
                   height={32}
                 />
                 <Image
                   className="dark:hidden"
-                  src={"/images/logo/logo-dark.svg"}
+                  src={"/images/logo/logo-light.png"}
                   alt="Logo"
                   width={176}
                   height={32}
                 />
               </Link>
-
               <p className="2xl:px-20">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit
                 suspendisse.
               </p>
-
               <span className="mt-15 inline-block">
                 <svg
                   width="350"
@@ -170,10 +194,10 @@ const SignIn: React.FC = () => {
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign In to TailAdmin
+                Sign In to Bacodo
               </h2>
 
-              <form>
+              <form onSubmit={loginFunc}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Email
@@ -181,10 +205,12 @@ const SignIn: React.FC = () => {
                   <div className="relative">
                     <input
                       type="email"
+                      name="email"
+                      // value='lesa77040@gmail.com'
+                      // onChange={() => console.log('sdf')}
                       placeholder="Enter your email"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
-
                     <span className="absolute right-4 top-4">
                       <svg
                         className="fill-current"
@@ -204,7 +230,6 @@ const SignIn: React.FC = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Password
@@ -212,6 +237,9 @@ const SignIn: React.FC = () => {
                   <div className="relative">
                     <input
                       type="password"
+                      name="password"
+                      // value={'Dequa@123!'}
+                      // onChange={() => console.log('sdf')}
                       placeholder="6+ Characters, 1 Capital letter"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -239,7 +267,6 @@ const SignIn: React.FC = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className="mb-5">
                   <input
                     type="submit"
@@ -247,7 +274,6 @@ const SignIn: React.FC = () => {
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>
-
                 <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
                   <span>
                     <svg
@@ -284,7 +310,6 @@ const SignIn: React.FC = () => {
                   </span>
                   Sign in with Google
                 </button>
-
                 <div className="mt-6 text-center">
                   <p>
                     Don’t have any account?{" "}
@@ -298,7 +323,7 @@ const SignIn: React.FC = () => {
           </div>
         </div>
       </div>
-    </DefaultLayout>
+    </div>
   );
 };
 
