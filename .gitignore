@@ -10,15 +10,7 @@
 /coverage
 
 # next.js
-/.next/cache/
-/.next/server/
-/.next/server/
-/.next/types/
-
-/.next/static/chunks/
-/.next/static/development/
-/.next/static/media/
-/.next/static/webpack/
+/.next/
 /out/
 
 # production
